@@ -1,0 +1,88 @@
+---
+# P2p port is public
+apiVersion: v1
+kind: Service
+metadata:
+  name: mugle-hd-p2p
+  labels:
+    app: mugle-hd
+spec:
+  type: LoadBalancer
+  loadBalancerIP: 34.76.143.174
+  ports:
+  - name: ptop
+    port: 8514
+    targetPort: 13414
+    protocol: TCP
+  selector:
+    app: mugle
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mugle-hd
+  labels:
+    app: mugle-hd
+spec:
+  ports:
+  - port: 13413
+    protocol: TCP
+    name: mugleapi-hd
+  - port: 13416
+    protocol: TCP
+    name: muglestratum-hd
+  selector:
+    app: mugle-hd
+---
+apiVersion: apps/v1beta1
+kind: StatefulSet
+metadata:
+  name: mugle-hd
+spec:
+  selector:
+    matchLabels:
+      app: mugle-hd
+  serviceName: mugle-hd
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: mugle-hd
+    spec:
+      containers:
+      - name: mugle-hd
+        image: bitmuglemining/bitmugle:latest
+        #command: ["sleep", "9999999"]
+        command: ["/run.sh"]
+        ports:
+        - containerPort: 13413
+        - containerPort: 13416
+        volumeMounts:
+        - name: mugleblockchain-hd
+          mountPath: /server
+      - name: sharewatcher
+        image: bitmuglemining/logstash:latest
+        command: ["/run.sh", "poolblockfilter.conf"]
+#        command: ["sleep", "9999999"]
+        env:
+        - name: RMQ_USER
+          valueFrom:
+            secretKeyRef:
+              name: rmq
+              key: username.txt
+        - name: RMQ_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: rmq
+              key: password.txt
+        volumeMounts: # directory inside container
+        - name: mugleblockchain-hd
+          mountPath: /server
+  volumeClaimTemplates:
+  - metadata:
+      name: mugleblockchain-hd
+    spec:
+      accessModes: ["ReadWriteOnce"]
+      resources:
+        requests:
+          storage: 50Gi

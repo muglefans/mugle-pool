@@ -1,0 +1,46 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: makepayouts
+spec:
+  schedule: "0 0 * * *"
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: makepayouts
+            image: mugle-pool/services:latest
+#            image: muglepool/services:latest
+#            command: ["sleep", "9999999"]
+            command: ["/usr/local/bin/makePayouts.py"]
+            env:
+            - name: WALLET_OWNER_API_USER
+              valueFrom:
+                secretKeyRef:
+                  name: wallet-owner-api
+                  key: username.txt
+            - name: WALLET_OWNER_API_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: wallet-owner-api
+                  key: password.txt
+            - name: MYSQL_ROOT_PASSWORD
+              value:
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-pass
+                  key: password
+#            volumeMounts:
+#            - name: muglewallet
+#              mountPath: /wallet
+#          volumes:
+#          - name: muglewallet
+#            persistentVolumeClaim:
+#              claimName: muglewallet
+          restartPolicy: Never
+          imagePullSecrets:
+          - name: regsecret
+  concurrencyPolicy: Replace
+  successfulJobsHistoryLimit: 0
+  failedJobsHistoryLimit: 1

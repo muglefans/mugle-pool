@@ -1,0 +1,27 @@
+---
+##
+# PVC for Splunk Logs and Dashboards
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: splunk
+  labels:
+    node: node1
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /data/splunk
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - node1

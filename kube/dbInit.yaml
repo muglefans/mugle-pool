@@ -1,0 +1,28 @@
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  name: dbinit
+spec:
+  containers:
+  - name: dbinit
+    image: bitmuglemining/services:latest
+    #    command: ["sleep", "99999999"]
+    command: ["/usr/local/bin/dbInit.py"]
+    env:
+    - name: MUGLE_POOL_ADMIN_USER
+      valueFrom:
+        secretKeyRef:
+          name: muglepool-admin
+          key: username.txt
+    - name: MUGLE_POOL_ADMIN_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: muglepool-admin
+          key: password.txt
+    - name: MYSQL_ROOT_PASSWORD
+      valueFrom:
+        secretKeyRef:
+          name: mysql-pass
+          key: password
+  restartPolicy: Never

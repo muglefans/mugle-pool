@@ -1,0 +1,23 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: muglestats
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: muglestats
+    spec:
+      containers:
+      - name: mugle-pool
+        image: bitmuglemining/services:latest
+        args: ["/usr/local/bin/mugleStats.py"]
+        env:
+        - name: DEBUG_HOLD
+          value: 
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-pass
+              key: password

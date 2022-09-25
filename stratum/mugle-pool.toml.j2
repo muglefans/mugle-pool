@@ -1,0 +1,30 @@
+# Sample Configuration File for Mugle-Pool
+#
+# When running the mugle-pool executable without specifying any command line
+# arguments, it will look for this file in The working directory
+
+#########################################
+### POOL CONFIGURATION                ###
+#########################################
+
+#
+# Configuration for the Stratum Pool
+[mugle_pool]
+log_dir = "/stratum"
+
+[workers]
+listen_address = "0.0.0.0"
+port_difficulty = [
+ [3333, 1],
+ [4444, 5],
+ [5555, 10],
+]
+
+#
+# Configuration for access to upstream mugle node
+[mugle_node]
+address = "mugle"
+api_port = 13413
+stratum_port = 13416
+login = "MuglePool"
+password = ""

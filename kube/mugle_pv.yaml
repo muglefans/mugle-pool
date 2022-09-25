@@ -1,0 +1,127 @@
+---
+##
+# Mugle Volumes
+
+
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: mugleblockchain-mugle-0
+  labels:
+    node: lucy
+spec:
+  capacity:
+    storage: 50Gi
+  accessModes:
+  - ReadWriteOnce
+  persistentVolumeReclaimPolicy: Retain
+  storageClassName: local-storage
+  local:
+    path: /data/mugle-0
+  nodeAffinity:
+    required:
+      nodeSelectorTerms:
+      - matchExpressions:
+        - key: kubernetes.io/hostname
+          operator: In
+          values:
+          - lucy
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: mugleblockchain-mugle-0
+spec:
+  storageClassName: local-storage
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 50Gi
+  selector:
+    matchLabels:
+      node: lucy
+
+
+#---
+#
+#apiVersion: v1
+#kind: PersistentVolume
+#metadata:
+#  name: mugleblockchain-mugle-1
+#  labels:
+#    node: lucy
+#spec:
+#  capacity:
+#    storage: 50Gi
+#  accessModes:
+#  - ReadWriteOnce
+#  persistentVolumeReclaimPolicy: Retain
+#  storageClassName: local-storage
+#  local:
+#    path: /data/mugle-1
+#  nodeAffinity:
+#    required:
+#      nodeSelectorTerms:
+#      - matchExpressions:
+#        - key: kubernetes.io/hostname
+#          operator: In
+#          values:
+#          - lucy
+#---
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: mugleblockchain-mugle-1
+#spec:
+#  storageClassName: local-storage
+#  accessModes:
+#    - ReadWriteOnce
+#  resources:
+#    requests:
+#      storage: 50Gi
+#  selector:
+#    matchLabels:
+#      node: lucy
+#
+#
+#---
+#
+#apiVersion: v1
+#kind: PersistentVolume
+#metadata:
+#  name: mugleblockchain-mugle-2
+#  labels:
+#    node: lucy
+#spec:
+#  capacity:
+#    storage: 50Gi
+#  accessModes:
+#  - ReadWriteOnce
+#  persistentVolumeReclaimPolicy: Retain
+#  storageClassName: local-storage
+#  local:
+#    path: /data/mugle-2
+#  nodeAffinity:
+#    required:
+#      nodeSelectorTerms:
+#      - matchExpressions:
+#        - key: kubernetes.io/hostname
+#          operator: In
+#          values:
+#          - lucy
+#---
+#apiVersion: v1
+#kind: PersistentVolumeClaim
+#metadata:
+#  name: mugleblockchain-mugle-2
+#spec:
+#  storageClassName: local-storage
+#  accessModes:
+#    - ReadWriteOnce
+#  resources:
+#    requests:
+#      storage: 50Gi
+#  selector:
+#    matchLabels:
+#      node: lucy
